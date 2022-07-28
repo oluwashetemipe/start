@@ -3,6 +3,8 @@ package com.app.start.controller;
 
 import com.app.start.data.repository.UserRepository;
 
+import com.app.start.exceptions.GeneralServiceException;
+import com.app.start.exceptions.UserNotFoundException;
 import com.app.start.service.dto.UpdateUserRequestDto;
 import com.app.start.service.dto.UserRegistrationRequestDto;
 import com.app.start.service.userService.UserService;
@@ -11,8 +13,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+
 
 @RestController
+@RequestMapping("api")
 public class AppController {
     @Autowired
     UserRepository userRepository;
@@ -47,6 +52,15 @@ public class AppController {
             return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+    @GetMapping("/list-all-users")
+    public ResponseEntity<?> listAllUsers(@RequestParam(value = "page",defaultValue = "1") int page,
+                                             @RequestParam(value = "size",defaultValue = "2") int size) {
+        try {
+            return new ResponseEntity<>(userService.findAllUsers(page,size), HttpStatus.OK);
+        } catch (Exception exception) {
+            return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
     @DeleteMapping("/delete-user/{userName}")
     public ResponseEntity<?> deleteUser(@PathVariable("userName")  String userName){
         try{
@@ -56,6 +70,23 @@ public class AppController {
         }
     }
 
+
+    @GetMapping("/user/find-by-date/{date}")
+    public ResponseEntity<?> findByDateCreated(@PathVariable("date")  LocalDate localDate){
+        try{
+            return new ResponseEntity<>(userService.findByDateCreated(localDate), HttpStatus.OK);
+        }catch (Exception exception){
+            return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @GetMapping("/user/firstName/{Firstname}")
+    public ResponseEntity<?> findByFirstName(@PathVariable("firstName")  String firstName){
+        try{
+            return new ResponseEntity<>(userService.findByFirstName(firstName), HttpStatus.OK);
+        }catch (Exception exception){
+            return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 
 
 

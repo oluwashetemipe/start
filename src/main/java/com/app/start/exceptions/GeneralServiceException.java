@@ -2,7 +2,6 @@ package com.app.start.exceptions;
 
 public class GeneralServiceException extends Exception{
     public GeneralServiceException() {
-
     }
 
     public GeneralServiceException(String message) {

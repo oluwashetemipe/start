@@ -6,6 +6,8 @@ import com.app.start.exceptions.UserNotFoundException;
 import com.app.start.service.dto.*;
 import org.springframework.http.HttpStatus;
 
+import java.time.LocalDate;
+
 public interface UserService {
 
 
@@ -15,13 +17,13 @@ public interface UserService {
 
     UpdateUserResponseDto editUser(UpdateUserRequestDto requestDto) throws GeneralServiceException, UserNotFoundException;
 
-//    UserListDto findAllUsers();
+    UserListDto findAllUsers(int page,int size);
 
     HttpStatus deleteByUserName(String userName) throws GeneralServiceException,UserNotFoundException;
 
-//    UserResponseDto findByFirstName(String name) throws GeneralServiceException;
-//
-//    List<UserResponseDto> findByDateCreated(Date date) throws GeneralServiceException;
+    UserResponseDto findByFirstName(String firstName) throws GeneralServiceException,UserNotFoundException;
+
+    UserResponseDto findByDateCreated(LocalDate date) throws UserNotFoundException,GeneralServiceException;
 
     UserResponseDto findByUsername(String userName) throws GeneralServiceException, UserNotFoundException;
 

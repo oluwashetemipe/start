@@ -1,4 +1,4 @@
-package com.app.start.service.config.security;
+//package com.app.start.service.config.security;
 
 //import org.springframework.context.annotation.Bean;
 //import org.springframework.context.annotation.Configuration;

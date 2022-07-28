@@ -6,13 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 @Data
 public class UserListDto {
+    private int sizeOfList;
     public List<UserResponseDto> responseDtoList = new ArrayList<>();
 
-    public UserListDto() {
-        this.responseDtoList = responseDtoList;
-    }
 
-    public List<UserResponseDto> getResponseDtoList() {
-        return responseDtoList;
-    }
+
 }

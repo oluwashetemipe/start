@@ -1,18 +1,16 @@
 package com.app.start.data.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import javax.management.relation.Role;
 import javax.persistence.*;
 import java.time.LocalDate;
 
 @Data
 @Entity
-@Table
-@NoArgsConstructor
+@Table(name = "tableUser")
 @AllArgsConstructor
-public class User {
+public class User{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
@@ -26,4 +24,9 @@ public class User {
     private String password;
     @Column
     private LocalDate dateCreated;
+//    @Column
+//    private String role;
+
+    public User() {
+    }
 }

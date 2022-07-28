@@ -8,11 +8,18 @@ import com.app.start.service.dto.*;
 import com.app.start.service.config.util.StringUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -20,6 +27,7 @@ public class UserServiceImpl implements UserService {
     UserRepository userRepository;
     @Autowired
     ModelMapper modelMapper;
+
 
 
     @Override
@@ -63,29 +71,27 @@ public class UserServiceImpl implements UserService {
 
 
 
-//    @Override
-//    public List<UserResponseDto> findAllUsers() {
-//        return List<UserResponseDto>;
-//    }
-//
-//
-//    @Override
-//    public UserResponseDto findByFirstName(String name) {
-//
-//        List user= userRepository.findByName(name);
-//        UserListDto UserListDto = new UserListDto();
-//        if (userListResponseDto.isPresent()){
-//            modelMapper.map(userListResponseDto.get(), userListResponseDto);
-//        }
-//
-//        UserResponseDto UserResponseDto = new UserResponseDto();
-//        return UserResponseDto;
-//    }
-//
-//    @Override
-//    public UserListDto findByDateCreated(Date date) {
-//        return userRepository.findByDateCreated(date);
-//    }
+    @Override
+    public UserListDto findAllUsers(int page,int size) {
+        Pageable pageable = PageRequest.of((page - 1), size);
+        Page<User> users = userRepository.findAll(pageable);
+        int totalSizeOfList = userRepository.findAll().size();
+        List<User> userList = users.getContent();
+        List<UserResponseDto> userResponseDtoList = new ArrayList<>();
+        for (User user : userList) {
+            //loop through contents
+            UserResponseDto userResponseDto = new UserResponseDto();
+            //map contents to dto
+            modelMapper.map(user, userResponseDto);
+            //add dto to dto list
+            userResponseDtoList.add(userResponseDto);
+        }
+//        create response object
+        UserListDto userListDto = new UserListDto();
+        userListDto.setResponseDtoList(userResponseDtoList);
+        userListDto.setSizeOfList(totalSizeOfList);
+        return userListDto;
+    }
 
     @Override
     public UserResponseDto findByUsername(String userName) throws UserNotFoundException {
@@ -98,6 +104,29 @@ public class UserServiceImpl implements UserService {
         modelMapper.map(user,userResponseDto);
         return userResponseDto;
     }
+    @Transactional(readOnly = true)
+    public UserResponseDto findByDateCreated(LocalDate date) throws UserNotFoundException {
+        Optional<User> userOptional = userRepository.findByDateCreated(date);
+        UserResponseDto userResponseDto = new UserResponseDto();
+        if (userOptional.isEmpty()){
+            throw new UserNotFoundException("User not found");
+        }
+        User user = userOptional.get();
+        modelMapper.map(user,userResponseDto);
+        return userResponseDto;
+    }
+    @Transactional(readOnly = true)
+    public UserResponseDto findByFirstName(String firstName) throws UserNotFoundException {
+        Optional<User> userOptional = userRepository.findByFirstName(firstName);
+        UserResponseDto userResponseDto = new UserResponseDto();
+        if (userOptional.isEmpty()){
+            throw new UserNotFoundException("User not found");
+        }
+        User user = userOptional.get();
+        modelMapper.map(user,userResponseDto);
+        return userResponseDto;
+    }
+
 
 
     @Override
@@ -114,6 +143,7 @@ public class UserServiceImpl implements UserService {
         User user = new User();
         modelMapper.map(userRegistrationRequestDto, user);
         user.setDateCreated(LocalDate.now());
+//        user.setRole("User");
         userRepository.save(user);
         return user;
     }
