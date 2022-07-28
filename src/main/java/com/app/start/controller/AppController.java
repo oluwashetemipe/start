@@ -71,15 +71,15 @@ public class AppController {
     }
 
 
-    @GetMapping("/user/find-by-date/{date}")
-    public ResponseEntity<?> findByDateCreated(@PathVariable("date")  LocalDate localDate){
-        try{
-            return new ResponseEntity<>(userService.findByDateCreated(localDate), HttpStatus.OK);
-        }catch (Exception exception){
-            return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-    }
-    @GetMapping("/user/firstName/{Firstname}")
+//    @GetMapping("/user/find-by-date/{date}")
+//    public ResponseEntity<?> findByDateCreated(@PathVariable("date")  LocalDate localDate){
+//        try{
+//            return new ResponseEntity<>(userService.findByDateCreated(localDate), HttpStatus.OK);
+//        }catch (Exception exception){
+//            return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+//        }
+//    }
+    @GetMapping("/user/firstName/{firstName}")
     public ResponseEntity<?> findByFirstName(@PathVariable("firstName")  String firstName){
         try{
             return new ResponseEntity<>(userService.findByFirstName(firstName), HttpStatus.OK);
