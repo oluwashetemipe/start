@@ -1,6 +1,7 @@
 package com.app.start.service.userService;
 
 import com.app.start.exceptions.GeneralServiceException;
+import com.app.start.exceptions.IncorrectPasswordException;
 import com.app.start.exceptions.RegistrationException;
 import com.app.start.exceptions.UserNotFoundException;
 import com.app.start.service.dto.*;
@@ -29,4 +30,5 @@ public interface UserService {
 
     UserRegistrationResponseDto registerUser(UserRegistrationRequestDto requestDto) throws RegistrationException;
 
+    UserLoginResponseDto loginUser(UserLoginDto userLoginDto) throws RegistrationException, UserNotFoundException, IncorrectPasswordException;
 }

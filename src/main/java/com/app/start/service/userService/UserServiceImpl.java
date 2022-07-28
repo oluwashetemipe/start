@@ -2,6 +2,7 @@ package com.app.start.service.userService;
 
 import com.app.start.data.model.User;
 import com.app.start.data.repository.UserRepository;
+import com.app.start.exceptions.IncorrectPasswordException;
 import com.app.start.exceptions.RegistrationException;
 import com.app.start.exceptions.UserNotFoundException;
 import com.app.start.service.dto.*;
@@ -18,8 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -127,8 +129,6 @@ public class UserServiceImpl implements UserService {
         return userResponseDto;
     }
 
-
-
     @Override
     public UserRegistrationResponseDto registerUser(UserRegistrationRequestDto requestDto) throws RegistrationException {
         //check all fields
@@ -139,6 +139,31 @@ public class UserServiceImpl implements UserService {
         User user = createUserFromDetails(requestDto);
         return generateRegistrationResponse(requestDto, user);
     }
+
+    @Override
+    public UserLoginResponseDto loginUser(UserLoginDto userLoginDto) throws RegistrationException, UserNotFoundException, IncorrectPasswordException {
+        if (StringUtil.isBlank(userLoginDto.getUserName())){
+            throw new RegistrationException("UserName cannot be empty");
+        }
+        if (StringUtil.isBlank(userLoginDto.getPassword())){
+            throw new RegistrationException("Password cannot be empty");
+        }
+        Optional<User> userOptional = userRepository.findByUserName(userLoginDto.getUserName());
+        if(userOptional.isEmpty()){
+            throw new UserNotFoundException("User not found");
+        }
+        User user=userOptional.get();
+        if(!Objects.equals(user.getPassword(), userLoginDto.getPassword())){
+            throw new IncorrectPasswordException("You entered a wrong password");
+        }
+        UserLoginResponseDto userLoginResponseDto=new UserLoginResponseDto();
+        userLoginResponseDto.setId(String.valueOf(user.getId()));
+        userLoginResponseDto.setUserName(user.getUserName());
+        userLoginResponseDto.setFirstName(user.getFirstName());
+        userLoginResponseDto.setLastName(user.getLastName());
+        return userLoginResponseDto;
+    }
+
     private User createUserFromDetails(UserRegistrationRequestDto userRegistrationRequestDto) {
         User user = new User();
         modelMapper.map(userRegistrationRequestDto, user);
@@ -177,6 +202,5 @@ public class UserServiceImpl implements UserService {
         if (StringUtil.isBlank(userRegistrationRequestDto.getPassword())){
             throw new RegistrationException("Password cannot be empty");
         }
-
     }
 }

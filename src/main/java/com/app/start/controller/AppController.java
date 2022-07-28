@@ -3,17 +3,14 @@ package com.app.start.controller;
 
 import com.app.start.data.repository.UserRepository;
 
-import com.app.start.exceptions.GeneralServiceException;
-import com.app.start.exceptions.UserNotFoundException;
 import com.app.start.service.dto.UpdateUserRequestDto;
+import com.app.start.service.dto.UserLoginDto;
 import com.app.start.service.dto.UserRegistrationRequestDto;
 import com.app.start.service.userService.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
 
 
 @RestController
@@ -24,11 +21,25 @@ public class AppController {
     @Autowired
     UserService userService;
 
+    @GetMapping("/test")
+    public String Registration() {
+       return "Start";
+    }
+
     @PostMapping("/register-user")
     public ResponseEntity<?> Registration(@RequestBody UserRegistrationRequestDto userRegistrationRequestDto) {
         try {
             //entry point
             return new ResponseEntity<>(userService.registerUser(userRegistrationRequestDto), HttpStatus.OK);
+        } catch (Exception exception) {
+            return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @PostMapping("/login-user")
+    public ResponseEntity<?> loginUser(@RequestBody UserLoginDto userLoginDto) {
+        try {
+            //entry point
+            return new ResponseEntity<>(userService.loginUser(userLoginDto), HttpStatus.OK);
         } catch (Exception exception) {
             return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
         }
